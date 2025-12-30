@@ -7,103 +7,153 @@
 
 ## 🚀 Introdução
 
-Inspirado na tendência **“Natty or Not”** do fisiculturismo, este projeto explora o universo das **IAs Generativas**, indo além da simples criação de conteúdo e propondo um desafio prático:
+Inspirado na tendência **“Natty or Not”** do fisiculturismo, este projeto explora o universo das **IAs Generativas** sob uma perspectiva prática e crítica.
 
-👉 **Como identificar se um texto é realmente humano (*Natty*) ou se foi gerado por Inteligência Artificial (*Fake Natty*)?**
+O desafio proposto é responder à seguinte pergunta:
 
-Este repositório apresenta uma solução experimental que utiliza **Processamento de Linguagem Natural (NLP)** e **Machine Learning** para classificar textos de acordo com sua provável origem.
+👉 **É possível identificar, por meio de padrões linguísticos, se um texto foi escrito por um humano (*Natty*) ou gerado por uma Inteligência Artificial (*Fake Natty*)?**
+
+Este repositório apresenta uma solução experimental baseada em **Processamento de Linguagem Natural (NLP)** e **Machine Learning**, com foco em **features estatísticas e interpretáveis**.
 
 ---
 
 ## 🎯 Objetivo do Projeto
 
-- Explorar o potencial das IAs Generativas
-- Analisar padrões linguísticos de textos humanos e sintéticos
+- Explorar o uso de IA de forma crítica e consciente
+- Analisar diferenças linguísticas entre textos humanos e textos gerados por IA
 - Desenvolver um **classificador Natty vs Fake Natty**
-- Contribuir para a discussão sobre autenticidade na era da IA
+- Aplicar conceitos de NLP, Engenharia de Features e Modelagem Supervisionada
+- Fortalecer o portfólio acadêmico e profissional
 
 ---
 
 ## 📒 Descrição
 
-O projeto consiste na criação de um **validador de conteúdo textual**, capaz de estimar a probabilidade de um texto ter sido escrito por um humano ou gerado por uma IA.
+O projeto consiste na construção de um **classificador supervisionado** capaz de estimar se um texto possui maior probabilidade de ter sido escrito por um humano ou por uma IA.
 
-A abordagem utiliza métricas estatísticas, análise sintática e modelos de classificação para diferenciar textos **naturais** de textos **artificiais**, alinhando-se à proposta do Lab da DIO.
+A abordagem adotada **não utiliza grandes modelos generativos para a classificação**, mas sim **métricas linguísticas e estatísticas**, como diversidade lexical, entropia e padrões de repetição, tornando o processo mais **explicável e reproduzível**.
 
 ---
 
 ## 🤖 Tecnologias Utilizadas
 
 ### 🧠 Inteligência Artificial & NLP
-- OpenAI (GPT-4 / GPT-4.1)
-- Hugging Face Transformers
-- spaCy
 - NLTK
-- Scikit-learn / PyTorch
+- Scikit-learn
 
-### 🛠️ Ferramentas
-- Python
-- Jupyter Notebook
+### 🛠️ Ferramentas e Bibliotecas
+- Python 3.10+
 - Pandas
 - NumPy
+- Joblib
+- Matplotlib
+- Jupyter Notebook
 - Git & GitHub
-- Flask ou Streamlit (interface de teste)
 
 ---
 
 ## 🧐 Processo de Criação
 
-1. **Fork do Repositório Oficial**
-   - Fork do Lab **Natty or Not** da DIO
+### 1. Fork do Repositório Oficial
+- Fork do Lab **Natty or Not** disponibilizado pela DIO
 
-2. **Coleta e Rotulagem de Dados**
-   - Textos escritos por humanos
-   - Textos gerados por IA
-   - Classificação manual (*Natty* / *Fake Natty*)
+### 2. Construção do Dataset
+- Textos escritos por humanos
+- Textos gerados por IA
+- Rotulagem binária:
+  - `0` → Fake Natty (IA)
+  - `1` → Natty (Humano)
 
-3. **Extração de Características**
-   - Frequência e diversidade lexical
-   - Entropia do texto
-   - Complexidade sintática
-   - Padrões de repetição
+### 3. Análise Exploratória de Dados (EDA)
+- Distribuição das classes
+- Estatísticas descritivas dos textos
+- Comparação entre padrões linguísticos
 
-4. **Treinamento dos Modelos**
-   - Regressão Logística
-   - Random Forest
-   - Avaliação com Acurácia e F1-score
+### 4. Engenharia de Features Textuais
+Extração de características como:
+- Tamanho do texto
+- Quantidade de palavras
+- Tamanho médio das palavras
+- Diversidade lexical
+- Taxa de stopwords
+- Entropia do texto
+- Repetição de bigramas
 
-5. **Validação**
-   - Testes com textos inéditos
-   - Interface simples para uso prático
+### 5. Modelagem Supervisionada
+- Pipeline com:
+  - Padronização dos dados (StandardScaler)
+  - Regressão Logística
+- Treinamento e salvamento do modelo
+- Avaliação com métricas clássicas de classificação
 
 ---
 
-## 🚀 Resultados
+## 🚀 Como Executar o Projeto
 
-- 🎯 **Acurácia média:** entre **87% e 92%**
-- 📊 Textos gerados por IA tendem a:
-  - Maior padronização linguística
-  - Menos erros naturais
-  - Estruturas sintáticas repetitivas
+### 1️⃣ Clonar o repositório
+```bash
+git clone https://github.com/sbstleal/lab-natty-or-not.git
+cd lab-natty-or-not
 
-- ✍️ Textos humanos apresentam:
-  - Maior variabilidade
-  - Erros e desvios naturais
-  - Estilo menos previsível
+### 2️⃣ Criar e ativar o ambiente virtual
+
+Windows (PowerShell):
+
+    python -m venv .venv
+    .venv\Scripts\Activate
+
+Linux / Mac:
+
+    python -m venv .venv
+    source .venv/bin/activate
+
+---
+
+### 3️⃣ Instalar dependências
+
+    pip install -r requirements.txt
+
+---
+
+### 4️⃣ Treinar o modelo
+
+    python -m src.models.train_model
+
+O modelo treinado será salvo automaticamente em:
+
+    src/artifacts/modelo_natty.pkl
+
+---
+
+### 5️⃣ Avaliar o modelo
+
+    python -m src.models.evaluate_model
+
+A avaliação apresenta:
+- Acurácia
+- Precision
+- Recall
+- F1-score por classe
+
+## 📊 Resultados
+
+Com um dataset reduzido e de caráter experimental, o modelo obteve:
+
+- **Acurácia aproximada:** 66%
+- Boa identificação de textos gerados por IA
+- Limitações esperadas na classe humana devido ao volume reduzido de dados
+
+📌 Os resultados validam a **abordagem metodológica**, não representando um modelo final de produção.
 
 ---
 
 ## 💭 Reflexão
 
-Criar algo realmente **“Natty”** na era das IAs Generativas é um desafio crescente.  
-Embora as IAs consigam produzir textos extremamente realistas, a escrita humana ainda carrega nuances difíceis de replicar perfeitamente.
+Criar algo verdadeiramente **“Natty”** na era das IAs Generativas é um desafio cada vez maior.
 
-Este projeto evidencia que:
-> ❗ Não existe classificação 100% precisa — apenas **probabilidades**.
+Embora modelos de IA consigam produzir textos extremamente realistas, ainda é possível identificar **padrões estatísticos sutis** que diferenciam textos humanos de textos artificiais — desde que se aceite que o resultado será sempre **probabilístico**, nunca absoluto.
 
-O uso consciente da IA exige **transparência, ética e pensamento crítico**.
-
----
+Este projeto reforça a importância do uso **consciente, ético e transparente** da Inteligência Artificial.
 
 ## 🔗 Créditos e Referências
 
