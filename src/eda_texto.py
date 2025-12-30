@@ -1,10 +1,25 @@
 import pandas as pd
 import numpy as np
+from pandas.errors import EmptyDataError
 import matplotlib.pyplot as plt
 from collections import Counter
 import nltk
 
-nltk.download("punkt")
+# tokenização robusta: tenta garantir recursos do NLTK e faz fallback simples
+def _safe_word_tokenize(text):
+    text = "" if text is None else str(text)
+    try:
+        return nltk.word_tokenize(text)
+    except LookupError:
+        try:
+            nltk.download("punkt", quiet=True)
+            return nltk.word_tokenize(text)
+        except Exception:
+            try:
+                nltk.download("punkt_tab", quiet=True)
+                return nltk.word_tokenize(text)
+            except Exception:
+                return text.split()
 
 class AnaliseExploratoriaTexto:
     """
@@ -20,21 +35,32 @@ class AnaliseExploratoriaTexto:
         - texto
         - label (1 = humano, 0 = IA)
         """
-        self.df = pd.read_csv(caminho_dataset)
+        try:
+            self.df = pd.read_csv(caminho_dataset)
+        except EmptyDataError:
+            raise ValueError(f"Arquivo '{caminho_dataset}' está vazio. Coloque um CSV com colunas 'texto' e 'label'.")
+
+        if self.df is None or self.df.empty:
+            raise ValueError(f"Arquivo '{caminho_dataset}' está vazio ou não contém dados. Coloque um CSV com colunas 'texto' e 'label'.")
+
+        expected = {"texto", "label"}
+        if not expected.issubset(set(self.df.columns)):
+            raise ValueError(f"Arquivo '{caminho_dataset}' deve conter as colunas: {expected}")
+
         self._preparar_dados()
 
     def _preparar_dados(self):
         """Cria colunas auxiliares para análise."""
         self.df["texto"] = self.df["texto"].astype(str)
         self.df["quantidade_palavras"] = self.df["texto"].apply(
-            lambda x: len(nltk.word_tokenize(x))
+            lambda x: len(_safe_word_tokenize(x))
         )
         self.df["tamanho_texto"] = self.df["texto"].apply(len)
         self.df["diversidade_lexical"] = self.df["texto"].apply(self._diversidade_lexical)
 
     @staticmethod
     def _diversidade_lexical(texto: str) -> float:
-        palavras = nltk.word_tokenize(texto)
+        palavras = _safe_word_tokenize(texto)
         if not palavras:
             return 0.0
         return len(set(palavras)) / len(palavras)
@@ -105,7 +131,7 @@ class AnaliseExploratoriaTexto:
         palavras = []
 
         for texto in textos:
-            palavras.extend(nltk.word_tokenize(texto.lower()))
+            palavras.extend(_safe_word_tokenize(texto.lower()))
 
         contador = Counter(palavras)
         return contador.most_common(top_n)
